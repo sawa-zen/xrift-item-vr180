@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react'
-import { BackSide, Color, Mesh, Texture } from 'three'
+import { BackSide, Color, EqualStencilFunc, Mesh, Texture } from 'three'
 
 interface EyeViewProps {
   texture: Texture
@@ -38,7 +38,7 @@ export const EyeView = ({ texture, eye, radius, segments, placeholderColor }: Ey
   // X軸のスケールを反転させて正しい向きのテクスチャを表示
   // rotation=[0, Math.PI, 0]で180度回転し、前方を向くように調整
   return (
-    <mesh rotation={[0, Math.PI, 0]} scale={[-1, 1, 1]} ref={meshRef}>
+    <mesh rotation={[0, Math.PI, 0]} scale={[-1, 1, 1]} ref={meshRef} renderOrder={-1}>
       <sphereGeometry args={[radius, segments, segments, 0, Math.PI]} />
       <shaderMaterial
         uniforms={{
@@ -47,6 +47,11 @@ export const EyeView = ({ texture, eye, radius, segments, placeholderColor }: Ey
           placeholderColor: { value: placeholderColorVec },
         }}
         side={BackSide}
+        depthTest={false}
+        depthWrite={false}
+        stencilWrite={true}
+        stencilRef={1}
+        stencilFunc={EqualStencilFunc}
         vertexShader={`
           varying vec2 vUv;
           void main() {

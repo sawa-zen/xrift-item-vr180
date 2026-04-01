@@ -1,6 +1,7 @@
 import { memo, useState } from 'react'
 import { Interactable } from '@xrift/world-components'
 import { EyeView } from './components/EyeView'
+import { PortalMask } from './components/PortalMask'
 import { useHlsVideo } from './hooks/useHlsVideo'
 
 const DEFAULT_RADIUS = 5
@@ -59,11 +60,12 @@ export const Item = memo(() => {
   return (
     <group>
       <group position={[0, 2, 0]}>
+        <PortalMask radius={2} segments={64} />
         <VideoSphere
           url={'https://pub-7786abff6e7846e697d20fae2a06943b.r2.dev/index.m3u8'}
           playing={playing}
           volume={0}
-          radius={2}
+          radius={500}
           segments={64}
           placeholderColor={'#000000'}
           onError={undefined}
