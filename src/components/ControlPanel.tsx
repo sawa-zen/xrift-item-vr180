@@ -3,17 +3,17 @@ import { Container, Text } from '@react-three/uikit'
 type ControlPanelProps = {
   playing: boolean
   volume: number
-  onPlay: () => void
-  onStop: () => void
+  url: string
+  onTogglePlay: () => void
   onVolumeUp: () => void
   onVolumeDown: () => void
+  onUrlEdit: () => void
 }
 
-export const ControlPanel = ({ playing, volume, onPlay, onStop, onVolumeUp, onVolumeDown }: ControlPanelProps) => {
+export const ControlPanel = ({ playing, volume, url, onTogglePlay, onVolumeUp, onVolumeDown, onUrlEdit }: ControlPanelProps) => {
   return (
     <Container
-      sizeX={1.2}
-      sizeY={2}
+      sizeX={1.6}
       pixelSize={0.005}
       flexDirection="column"
       gap={12}
@@ -23,20 +23,36 @@ export const ControlPanel = ({ playing, volume, onPlay, onStop, onVolumeUp, onVo
       borderRadius={12}
       alignItems="stretch"
     >
-      <Button label={playing ? '⏸ Pause' : '▶ Play'} onClick={onPlay} />
-      <Button label="■ Stop" onClick={onStop} />
-      <Button label="🔉 Vol-" onClick={onVolumeDown} />
-      <Button label="🔊 Vol+" onClick={onVolumeUp} />
-      <Container paddingTop={4} alignItems="center" justifyContent="center">
-        <Text fontSize={14} color={0xaaaaaa}>
-          {`Vol: ${Math.round(volume * 100)}%`}
+      <Container alignItems="center" justifyContent="center" paddingBottom={4}>
+        <Text fontSize={16} color={0xffffff} fontWeight="bold">
+          VR180 Player
         </Text>
+      </Container>
+      {/* URL */}
+      <Container flexDirection="row" gap={8} alignItems="center">
+        <Button label="URL" onClick={onUrlEdit} />
+        <Container flexGrow={1} overflow="hidden">
+          <Text fontSize={10} color={0x888888}>
+            {url}
+          </Text>
+        </Container>
+      </Container>
+      {/* Play + Volume */}
+      <Container flexDirection="row" gap={8} alignItems="center">
+        <Button label={playing ? 'Pause' : 'Play'} flexGrow={1} onClick={onTogglePlay} />
+        <Button label="-" onClick={onVolumeDown} />
+        <Container alignItems="center" justifyContent="center" paddingX={4}>
+          <Text fontSize={14} color={0xaaaaaa}>
+            {`${Math.round(volume * 100)}%`}
+          </Text>
+        </Container>
+        <Button label="+" onClick={onVolumeUp} />
       </Container>
     </Container>
   )
 }
 
-const Button = ({ label, onClick }: { label: string; onClick: () => void }) => {
+const Button = ({ label, onClick, flexGrow }: { label: string; onClick: () => void; flexGrow?: number }) => {
   return (
     <Container
       onClick={onClick}
@@ -48,6 +64,7 @@ const Button = ({ label, onClick }: { label: string; onClick: () => void }) => {
       paddingX={16}
       alignItems="center"
       justifyContent="center"
+      flexGrow={flexGrow}
     >
       <Text fontSize={18} color={0xffffff}>
         {label}
