@@ -96,6 +96,7 @@ export function useHlsVideo({
     if (!video) return
 
     if (playing) {
+      video.muted = false
       video.play().catch((err) => console.error('[useHlsVideo] Play error:', err))
     } else {
       video.pause()
