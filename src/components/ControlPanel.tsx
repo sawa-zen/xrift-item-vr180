@@ -33,7 +33,7 @@ export const ControlPanel = ({ playing, volume, url, onTogglePlay, onVolumeUp, o
         <Button label="URL" onClick={onUrlEdit} />
         <Container flexGrow={1} overflow="hidden">
           <Text fontSize={10} color={0x888888}>
-            {url}
+            {url.length > 40 ? `${url.slice(0, 40)}...` : url}
           </Text>
         </Container>
       </Container>
@@ -41,9 +41,9 @@ export const ControlPanel = ({ playing, volume, url, onTogglePlay, onVolumeUp, o
       <Container flexDirection="row" gap={8} alignItems="center">
         <Button label={playing ? 'Pause' : 'Play'} flexGrow={1} onClick={onTogglePlay} />
         <Button label="-" onClick={onVolumeDown} />
-        <Container alignItems="center" justifyContent="center" paddingX={4}>
+        <Container alignItems="center" justifyContent="center" width={70}>
           <Text fontSize={14} color={0xaaaaaa}>
-            {`${Math.round(volume * 100)}%`}
+            {`Vol ${Math.round(volume * 100)}%`}
           </Text>
         </Container>
         <Button label="+" onClick={onVolumeUp} />
