@@ -26,7 +26,10 @@ export class HlsJsPlayer implements HlsPlayerStrategy {
           onError?.(new Error(`HLS media error: ${data.details}`))
         }
       } else if (data.type === HlsClass.ErrorTypes.NETWORK_ERROR) {
-        this.hls.startLoad()
+        if (!this.tracker.isErrorReported) {
+          this.tracker.markErrorReported()
+          onError?.(new Error(`HLS network error: ${data.details}`))
+        }
       } else {
         if (!this.tracker.isErrorReported) {
           this.tracker.markErrorReported()

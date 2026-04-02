@@ -62,10 +62,18 @@ export const Item = memo(() => {
   const [playing, setPlaying] = useState(false)
   const [volume, setVolume] = useState(0.5)
   const [url, setUrl] = useState('')
+  const [error, setError] = useState<string | null>(null)
 
-  const handleTogglePlay = useCallback(() => setPlaying((prev) => !prev), [])
+  const handleTogglePlay = useCallback(() => {
+    setError(null)
+    setPlaying((prev) => !prev)
+  }, [])
   const handleVolumeUp = useCallback(() => setVolume((v) => Math.min(1, v + 0.25)), [])
   const handleVolumeDown = useCallback(() => setVolume((v) => Math.max(0, v - 0.25)), [])
+  const handleError = useCallback((err: Error) => {
+    setError(err.message)
+    setPlaying(false)
+  }, [])
   const { requestTextInput } = useTextInputContext()
   const handleUrlEdit = useCallback(() => {
     requestTextInput({
@@ -76,6 +84,7 @@ export const Item = memo(() => {
         if (value.trim()) {
           setUrl(value.trim())
           setPlaying(false)
+          setError(null)
         }
       },
     })
@@ -93,20 +102,22 @@ export const Item = memo(() => {
             radius={500}
             segments={64}
             placeholderColor={'#000000'}
-            onError={undefined}
+            onError={handleError}
             onBufferingChange={undefined}
           />
-        ) : (
+        ) : null}
+        {/* プレースホルダー / エラー表示 */}
+        {(!url || error) && (
           <Text
             position={[0, 0, -1]}
             fontSize={0.2}
-            color="#888888"
+            color={error ? '#cc4444' : '#888888'}
             anchorX="center"
             anchorY="middle"
             maxWidth={3}
             textAlign="center"
           >
-            {'URLを入力して\n再生してください'}
+            {error ? `Error\n${error}` : 'URLを入力して\n再生してください'}
           </Text>
         )}
       </group>
