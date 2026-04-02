@@ -8,13 +8,16 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Canvas } from '@react-three/fiber'
+import { Physics } from '@react-three/rapier'
 import { Item } from './Item'
 
 const App = () => {
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
       <Canvas camera={{ position: [0, 0, 0.1], fov: 75 }}>
-        <Item />
+        <Physics>
+          <Item />
+        </Physics>
       </Canvas>
     </div>
   )

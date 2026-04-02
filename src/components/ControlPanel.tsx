@@ -32,8 +32,8 @@ export const ControlPanel = ({ playing, volume, url, onTogglePlay, onVolumeUp, o
       <Container flexDirection="row" gap={8} alignItems="center">
         <Button label="URL" onClick={onUrlEdit} />
         <Container flexGrow={1} overflow="hidden">
-          <Text fontSize={10} color={0x888888}>
-            {url.length > 40 ? `${url.slice(0, 40)}...` : url}
+          <Text fontSize={10} color={url ? 0x888888 : 0x555555}>
+            {url ? (url.length > 40 ? `${url.slice(0, 40)}...` : url) : 'URLを入力してください'}
           </Text>
         </Container>
       </Container>

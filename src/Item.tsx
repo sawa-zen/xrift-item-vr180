@@ -1,11 +1,12 @@
 import { memo, useCallback, useState } from 'react'
+import { Text } from '@react-three/drei'
 import { useTextInputContext } from '@xrift/world-components'
 import { EyeView } from './components/EyeView'
 import { PortalMask } from './components/PortalMask'
 import { ControlPanel } from './components/ControlPanel'
+import { Pedestal } from './components/Pedestal'
 import { useHlsVideo } from './hooks/useHlsVideo'
 
-const DEFAULT_URL = 'https://pub-7786abff6e7846e697d20fae2a06943b.r2.dev/index.m3u8'
 
 const DEFAULT_RADIUS = 5
 const DEFAULT_SEGMENTS = 64
@@ -60,7 +61,7 @@ VideoSphere.displayName = 'VideoSphere'
 export const Item = memo(() => {
   const [playing, setPlaying] = useState(false)
   const [volume, setVolume] = useState(0.5)
-  const [url, setUrl] = useState(DEFAULT_URL)
+  const [url, setUrl] = useState('')
 
   const handleTogglePlay = useCallback(() => setPlaying((prev) => !prev), [])
   const handleVolumeUp = useCallback(() => setVolume((v) => Math.min(1, v + 0.25)), [])
@@ -82,19 +83,35 @@ export const Item = memo(() => {
 
   return (
     <group>
-      <group position={[0, 2, 0]}>
-        <PortalMask radius={2} segments={64} />
-        <VideoSphere
-          url={url}
-          playing={playing}
-          volume={volume}
-          radius={500}
-          segments={64}
-          placeholderColor={'#000000'}
-          onError={undefined}
-          onBufferingChange={undefined}
-        />
+      <group position={[0, 2.35, 0]}>
+        <PortalMask radius={2} segments={64} showPortal={!!url} />
+        {url ? (
+          <VideoSphere
+            url={url}
+            playing={playing}
+            volume={volume}
+            radius={500}
+            segments={64}
+            placeholderColor={'#000000'}
+            onError={undefined}
+            onBufferingChange={undefined}
+          />
+        ) : (
+          <Text
+            position={[0, 0, -1]}
+            fontSize={0.2}
+            color="#888888"
+            anchorX="center"
+            anchorY="middle"
+            maxWidth={3}
+            textAlign="center"
+          >
+            {'URLを入力して\n再生してください'}
+          </Text>
+        )}
       </group>
+      {/* 台座 */}
+      <Pedestal />
       {/* 操作パネル */}
       <group position={[-2.8, 1, 0.5]} rotation={[0, Math.PI / 8, 0]}>
         <ControlPanel

@@ -53,6 +53,9 @@ export default defineConfig({
         '@react-three/uikit': {
           singleton: true,
         },
+        '@react-three/rapier': {
+          singleton: true,
+        },
       },
     }),
   ],
