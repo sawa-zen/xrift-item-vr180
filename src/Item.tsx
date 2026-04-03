@@ -4,7 +4,7 @@ import { useTextInputContext } from '@xrift/world-components'
 import { EyeView } from './components/EyeView'
 import { PortalMask } from './components/PortalMask'
 import { ControlPanel } from './components/ControlPanel'
-import { Pedestal } from './components/Pedestal'
+import { Pedestal, PEDESTAL_HEIGHT } from './components/Pedestal'
 import { useHlsVideo } from './hooks/useHlsVideo'
 
 
@@ -61,7 +61,7 @@ VideoSphere.displayName = 'VideoSphere'
 export const Item = memo(() => {
   const [playing, setPlaying] = useState(false)
   const [volume, setVolume] = useState(0.5)
-  const [url, setUrl] = useState('')
+  const [url, setUrl] = useState('https://pub-7786abff6e7846e697d20fae2a06943b.r2.dev/index.m3u8')
   const [error, setError] = useState<string | null>(null)
 
   const handleTogglePlay = useCallback(() => {
@@ -92,7 +92,7 @@ export const Item = memo(() => {
 
   return (
     <group>
-      <group position={[0, 2.35, 0]}>
+      <group position={[0, PEDESTAL_HEIGHT + 0.01 + 2, 0]}>
         <PortalMask radius={2} segments={64} showPortal={!!url} />
         {url ? (
           <VideoSphere

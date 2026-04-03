@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import { VideoTexture } from 'three'
-import { useWebAudioVolume } from '../useWebAudioVolume'
 import { appendCacheKey, createVideoTexture, createHlsPlayer } from './utils'
 import { RecoveryTracker } from './classes/RecoveryTracker'
 import type { HlsPlayerStrategy } from './types'
@@ -123,8 +122,19 @@ export function useHlsVideo({
     }
   }, [onBufferingChange])
 
-  // Web Audio API を使用した音量制御（iOS対応）
-  useWebAudioVolume(videoRef.current, volume)
+  // 音量制御
+  // - Quest/Android/デスクトップ: video.volume で段階的に制御
+  // - iOS: video.volume は読み取り専用のため video.muted で mute/unmute のみ
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) return
+    try {
+      video.volume = Math.max(0, Math.min(1, volume))
+    } catch {
+      // iOS では volume が読み取り専用のため無視
+    }
+    video.muted = volume === 0
+  }, [volume])
 
   // クリーンアップ
   useEffect(() => {

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { RigidBody } from '@react-three/rapier'
 import { DoubleSide, type CylinderGeometry, type ShaderMaterial } from 'three'
 
-const PEDESTAL_HEIGHT = 0.3
+export const PEDESTAL_HEIGHT = 0.15
 const BOTTOM_RADIUS = 2.2
 const TOP_RADIUS = 2.0
 

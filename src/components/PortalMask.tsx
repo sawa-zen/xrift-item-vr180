@@ -74,7 +74,7 @@ export const PortalMask = ({ radius, segments, showPortal = true }: PortalMaskPr
         <sphereGeometry args={[radius * 1.002, segments, segments, 0, Math.PI]} />
         <meshStandardMaterial
           side={FrontSide}
-          color="#888888"
+          color="#bb99cc"
           stencilWrite={true}
           stencilRef={0}
           stencilFunc={AlwaysStencilFunc}
