@@ -1,7 +1,7 @@
 import { memo, useCallback, useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { Text } from '@react-three/drei'
-import { useTextInputContext } from '@xrift/world-components'
+import { useTextInputContext, useInstanceState } from '@xrift/world-components'
 import { Group, Vector3 } from 'three'
 import { EyeView } from './components/EyeView'
 import { AuroraShell } from './components/AuroraShell'
@@ -66,11 +66,11 @@ VideoSphere.displayName = 'VideoSphere'
  * VRモードでは左目と右目に適切な映像を表示する。
  */
 export const Item = memo(() => {
-  const [userPlaying, setUserPlaying] = useState(false)
+  const [userPlaying, setUserPlaying] = useInstanceState('userPlaying', false)
   const [farAway, setFarAway] = useState(false)
   const farAwayRef = useRef(false)
-  const [volume, setVolume] = useState(0.5)
-  const [url, setUrl] = useState('https://pub-7786abff6e7846e697d20fae2a06943b.r2.dev/index.m3u8')
+  const [volume, setVolume] = useInstanceState('volume', 0.5)
+  const [url, setUrl] = useInstanceState('url', 'https://pub-7786abff6e7846e697d20fae2a06943b.r2.dev/index.m3u8')
   const [error, setError] = useState<string | null>(null)
   const portalGroupRef = useRef<Group>(null)
 
