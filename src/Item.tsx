@@ -1,11 +1,18 @@
-import { memo, useCallback, useState } from 'react'
+import { memo, useCallback, useRef, useState } from 'react'
+import { useFrame } from '@react-three/fiber'
 import { Text } from '@react-three/drei'
 import { useTextInputContext } from '@xrift/world-components'
+import { Group, Vector3 } from 'three'
 import { EyeView } from './components/EyeView'
+import { AuroraShell } from './components/AuroraShell'
 import { PortalMask } from './components/PortalMask'
 import { ControlPanel } from './components/ControlPanel'
 import { Pedestal, PEDESTAL_HEIGHT } from './components/Pedestal'
 import { useHlsVideo } from './hooks/useHlsVideo'
+
+const AUTO_PAUSE_DISTANCE = 12
+const AUTO_RESUME_DISTANCE = 8
+const _worldPos = new Vector3()
 
 
 const DEFAULT_RADIUS = 5
@@ -59,20 +66,40 @@ VideoSphere.displayName = 'VideoSphere'
  * VRモードでは左目と右目に適切な映像を表示する。
  */
 export const Item = memo(() => {
-  const [playing, setPlaying] = useState(false)
+  const [userPlaying, setUserPlaying] = useState(false)
+  const [farAway, setFarAway] = useState(false)
+  const farAwayRef = useRef(false)
   const [volume, setVolume] = useState(0.5)
   const [url, setUrl] = useState('https://pub-7786abff6e7846e697d20fae2a06943b.r2.dev/index.m3u8')
   const [error, setError] = useState<string | null>(null)
+  const portalGroupRef = useRef<Group>(null)
+
+  const playing = userPlaying && !farAway
+
+  useFrame(({ camera }) => {
+    if (!portalGroupRef.current) return
+    portalGroupRef.current.getWorldPosition(_worldPos)
+    const distance = camera.position.distanceTo(_worldPos)
+
+    let isFar = farAwayRef.current
+    if (!isFar && distance > AUTO_PAUSE_DISTANCE) isFar = true
+    if (isFar && distance < AUTO_RESUME_DISTANCE) isFar = false
+
+    if (isFar !== farAwayRef.current) {
+      farAwayRef.current = isFar
+      setFarAway(isFar)
+    }
+  })
 
   const handleTogglePlay = useCallback(() => {
     setError(null)
-    setPlaying((prev) => !prev)
+    setUserPlaying((prev) => !prev)
   }, [])
   const handleVolumeUp = useCallback(() => setVolume((v) => Math.min(1, v + 0.25)), [])
   const handleVolumeDown = useCallback(() => setVolume((v) => Math.max(0, v - 0.25)), [])
   const handleError = useCallback((err: Error) => {
     setError(err.message)
-    setPlaying(false)
+    setUserPlaying(false)
   }, [])
   const { requestTextInput } = useTextInputContext()
   const handleUrlEdit = useCallback(() => {
@@ -83,7 +110,7 @@ export const Item = memo(() => {
       onSubmit: (value) => {
         if (value.trim()) {
           setUrl(value.trim())
-          setPlaying(false)
+          setUserPlaying(false)
           setError(null)
         }
       },
@@ -92,9 +119,9 @@ export const Item = memo(() => {
 
   return (
     <group>
-      <group position={[0, PEDESTAL_HEIGHT + 0.01 + 2, 0]}>
-        <PortalMask radius={2} segments={64} showPortal={!!url} />
-        {url ? (
+      <group ref={portalGroupRef} position={[0, PEDESTAL_HEIGHT + 0.01 + 2, 0]}>
+        <PortalMask radius={2} segments={64} showPortal />
+        {url && (
           <VideoSphere
             url={url}
             playing={playing}
@@ -105,7 +132,10 @@ export const Item = memo(() => {
             onError={handleError}
             onBufferingChange={undefined}
           />
-        ) : null}
+        )}
+        {!playing && (
+          <AuroraShell radius={500} segments={64} forceShow={!url || !!error} />
+        )}
         {/* プレースホルダー / エラー表示 */}
         {(!url || error) && (
           <Text
