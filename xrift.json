@@ -3,6 +3,7 @@
     "distDir": "./dist",
     "title": "vr180",
     "description": "HLS対応の180度ステレオ動画プレイヤーアイテム",
+    "thumbnailPath": "thumbnail.png",
     "buildCommand": "npm run build"
   }
 }
