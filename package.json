@@ -36,7 +36,7 @@
     "@types/react-dom": "^19.1.7",
     "@types/three": "^0.176.0",
     "@vitejs/plugin-react": "^4.3.2",
-    "@xrift/world-components": "^0.35.4",
+    "@xrift/world-components": "^0.41.0",
     "typescript": "^5.6.2",
     "vite": "^6.0.1",
     "vite-plugin-dts": "^4.0.0"
